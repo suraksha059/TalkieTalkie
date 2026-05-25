@@ -1,0 +1,49 @@
+name: talk_show
+description: "A real-time push-to-talk walkie-talkie app"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+
+  # Firebase
+  firebase_core: ^3.12.1
+  firebase_auth: ^5.5.1
+  cloud_firestore: ^5.6.5
+  firebase_messaging: ^15.2.4
+  google_sign_in: ^6.2.2
+
+  # WebRTC
+  flutter_webrtc: ^0.12.8
+
+  # Routing
+  go_router: ^15.1.2
+
+  # UI & Animations
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+
+  # Utilities
+  uuid: ^4.5.1
+  share_plus: ^10.1.4
+  permission_handler: ^11.4.0
+
+  # Background
+  flutter_local_notifications: ^18.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "960319770148",
+    "project_id": "talkwith-m",
+    "storage_bucket": "talkwith-m.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960319770148:android:413327029873efb68e92b1",
+        "android_client_info": {
+          "package_name": "com.example.talk_show"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960319770148-34tjcoh1hropsclrjncqbvul64g4l37l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.talk_show",
+            "certificate_hash": "539e8df273b53f016522d224a709835e343adca3"
+          }
+        },
+        {
+          "client_id": "960319770148-aohovrrqkhesok99873qolh8dgiqhqb0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2GKpN-QBC9s-dQYA_eRrYe3I4hx0oGUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960319770148-aohovrrqkhesok99873qolh8dgiqhqb0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "960319770148-8hal0c4e14mh0kfqbgf5lcannipb9v3c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.talkShow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

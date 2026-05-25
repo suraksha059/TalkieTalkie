@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>960319770148-8hal0c4e14mh0kfqbgf5lcannipb9v3c.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.960319770148-8hal0c4e14mh0kfqbgf5lcannipb9v3c</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>960319770148-34tjcoh1hropsclrjncqbvul64g4l37l.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCKhS486VnFRQ757nmL84C3YC6ixLcWKaQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>960319770148</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.talkShow</string>
+	<key>PROJECT_ID</key>
+	<string>talkwith-m</string>
+	<key>STORAGE_BUCKET</key>
+	<string>talkwith-m.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:960319770148:ios:e432a5637bfe1aa58e92b1</string>
+</dict>
+</plist>
