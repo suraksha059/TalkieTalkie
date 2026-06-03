@@ -290,32 +290,31 @@ class _AnimatedLogoState extends State<_AnimatedLogo>
         child: child,
       ),
       child: Container(
-        width: 108,
-        height: 108,
+        width: 118,
+        height: 118,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF6C63FF), Color(0xFF00E5FF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF6C63FF).withValues(alpha: 0.55),
               blurRadius: 40,
-              spreadRadius: 4,
+              spreadRadius: 6,
             ),
             BoxShadow(
-              color: const Color(0xFF00E5FF).withValues(alpha: 0.2),
+              color: const Color(0xFF00E5FF).withValues(alpha: 0.25),
               blurRadius: 60,
-              spreadRadius: 8,
+              spreadRadius: 10,
             ),
           ],
         ),
-        child: const Icon(
-          Icons.mic_rounded,
-          size: 52,
-          color: Colors.white,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Image.asset(
+            'assets/talkie_icon.png',
+            width: 118,
+            height: 118,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     )
