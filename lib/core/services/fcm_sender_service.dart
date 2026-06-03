@@ -22,7 +22,9 @@ class FcmSenderService {
     if (_cachedCredentials != null) return _cachedCredentials;
 
     try {
-      final jsonString = await rootBundle.loadString('assets/service_account.json');
+      final jsonString = await rootBundle.loadString(
+        'assets/service_account.json',
+      );
       _cachedCredentials = jsonDecode(jsonString) as Map<String, dynamic>;
       return _cachedCredentials;
     } catch (e) {
@@ -50,9 +52,14 @@ class FcmSenderService {
     }
 
     try {
-      final serviceAccountCredentials = ServiceAccountCredentials.fromJson(credentials);
+      final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+        credentials,
+      );
       final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
-      final client = await clientViaServiceAccount(serviceAccountCredentials, scopes);
+      final client = await clientViaServiceAccount(
+        serviceAccountCredentials,
+        scopes,
+      );
       final token = client.credentials.accessToken.data;
       client.close();
       return token;
@@ -70,13 +77,17 @@ class FcmSenderService {
     required String senderName,
   }) async {
     if (receiverFcmToken.isEmpty) {
-      debugPrint('FCM Sender: Receiver token is empty. Cannot send push notification.');
+      debugPrint(
+        'FCM Sender: Receiver token is empty. Cannot send push notification.',
+      );
       return;
     }
 
     final accessToken = await _getAccessToken();
     if (accessToken == null) {
-      debugPrint('FCM Sender: Access token generation failed. Cannot send push notification.');
+      debugPrint(
+        'FCM Sender: Access token generation failed. Cannot send push notification.',
+      );
       return;
     }
 
@@ -92,7 +103,10 @@ class FcmSenderService {
 
       // Add headers
       request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
-      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+      request.headers.set(
+        HttpHeaders.authorizationHeader,
+        'Bearer $accessToken',
+      );
 
       // Add FCM v1 payload
       final payload = {
@@ -106,13 +120,9 @@ class FcmSenderService {
           },
           'android': {'priority': 'HIGH'},
           'apns': {
-            'headers': {
-              'apns-priority': '10',
-            },
+            'headers': {'apns-priority': '10'},
             'payload': {
-              'aps': {
-                'content-available': 1,
-              },
+              'aps': {'content-available': 1},
             },
           },
         },
@@ -122,7 +132,9 @@ class FcmSenderService {
       final response = await request.close();
 
       if (response.statusCode == 200) {
-        debugPrint('FCM Sender: Successfully sent background talk notification via FCM v1.');
+        debugPrint(
+          'FCM Sender: Successfully sent background talk notification via FCM v1.',
+        );
       } else {
         final responseBody = await response.transform(utf8.decoder).join();
         debugPrint(
