@@ -10,6 +10,7 @@ import '../../auth/providers/auth_provider.dart';
 import '../../friends/providers/friends_provider.dart';
 import '../data/webrtc_service.dart';
 import '../data/signaling_repository.dart';
+import '../../../core/services/fcm_sender_service.dart';
 
 /// Talk session state.
 enum TalkState {
@@ -248,6 +249,26 @@ class TalkSessionNotifier extends StateNotifier<TalkSessionState> {
         callerId: user.uid,
         receiverId: selectedFriend.uid,
       );
+
+      // Fetch receiver's FCM token from Firestore and trigger background wakeup
+      try {
+        final receiverDoc = await FirebaseFirestore.instance
+            .collection(FirebaseConstants.usersCollection)
+            .doc(selectedFriend.uid)
+            .get();
+        final receiverFcmToken =
+            receiverDoc.data()?[FirebaseConstants.fieldFcmToken] as String?;
+        if (webrtc.currentCallId != null && receiverFcmToken != null) {
+          FcmSenderService.sendIncomingTalkNotification(
+            receiverFcmToken: receiverFcmToken,
+            callId: webrtc.currentCallId!,
+            senderId: user.uid,
+            senderName: user.displayName ?? 'Someone',
+          );
+        }
+      } catch (e) {
+        debugPrint('Error triggering background wakeup push: $e');
+      }
 
       // Check if user already released the button while we were connecting
       if (!_isTalkingRequested) {
