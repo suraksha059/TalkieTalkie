@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -12,12 +13,13 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(authLoadingProvider);
     final size = MediaQuery.of(context).size;
+    final bool isIOS = Platform.isIOS;
 
     return Scaffold(
       backgroundColor: const Color(0xFF070B14),
       body: Stack(
         children: [
-          // Ambient glow effects
+          // Ambient glow — top left
           Positioned(
             top: -size.height * 0.15,
             left: -size.width * 0.3,
@@ -28,13 +30,14 @@ class LoginScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF6C63FF).withValues(alpha: 0.25),
+                    const Color(0xFF6C63FF).withValues(alpha: 0.22),
                     Colors.transparent,
                   ],
                 ),
               ),
             ),
           ),
+          // Ambient glow — bottom right
           Positioned(
             bottom: -size.height * 0.1,
             right: -size.width * 0.2,
@@ -45,7 +48,7 @@ class LoginScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF00E5FF).withValues(alpha: 0.15),
+                    const Color(0xFF00E5FF).withValues(alpha: 0.13),
                     Colors.transparent,
                   ],
                 ),
@@ -53,18 +56,16 @@ class LoginScreen extends ConsumerWidget {
             ),
           ),
 
-          // Subtle grid pattern overlay
-          Positioned.fill(
-            child: CustomPaint(painter: _GridPainter()),
-          ),
+          // Subtle grid pattern
+          Positioned.fill(child: CustomPaint(painter: _GridPainter())),
 
-          // Main content — full screen, no SafeArea clipping issues
+          // Main content
           SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Column(
               children: [
-                // Top section: logo + text (flexible so it shrinks when keyboard opens)
+                // Top: logo + branding
                 Expanded(
                   flex: 6,
                   child: Padding(
@@ -77,40 +78,33 @@ class LoginScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Animated logo
-                        _AnimatedLogo(),
-
+                        _PulsingLogo(),
                         const SizedBox(height: 36),
 
-                        // App name
+                        // Gradient app name
                         ShaderMask(
-                          shaderCallback: (bounds) =>
-                              const LinearGradient(
-                                colors: [
-                                  Color(0xFFFFFFFF),
-                                  Color(0xFF9D97FF),
-                                ],
+                              shaderCallback: (bounds) => const LinearGradient(
+                                colors: [Colors.white, Color(0xFF9D97FF)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ).createShader(bounds),
-                          child: Text(
-                            'Talkie',
-                            style: GoogleFonts.spaceGrotesk(
-                              fontSize: 52,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: -2,
-                              height: 1,
-                            ),
-                          ),
-                        )
+                              child: Text(
+                                'Talkie',
+                                style: GoogleFonts.spaceGrotesk(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  letterSpacing: -2,
+                                  height: 1,
+                                ),
+                              ),
+                            )
                             .animate()
                             .fadeIn(delay: 300.ms, duration: 600.ms)
                             .slideY(begin: 0.2, end: 0),
 
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 12),
 
-                        // Tagline
                         Text(
                           'Hold. Talk. Connect.',
                           style: GoogleFonts.inter(
@@ -119,13 +113,11 @@ class LoginScreen extends ConsumerWidget {
                             color: const Color(0xFF8B949E),
                             letterSpacing: 0.3,
                           ),
-                        )
-                            .animate()
-                            .fadeIn(delay: 500.ms, duration: 600.ms),
+                        ).animate().fadeIn(delay: 450.ms),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
 
-                        // Sub tagline with pill badges
+                        // Feature pills
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -147,15 +139,13 @@ class LoginScreen extends ConsumerWidget {
                               color: const Color(0xFF3FB950),
                             ),
                           ],
-                        )
-                            .animate()
-                            .fadeIn(delay: 700.ms, duration: 600.ms),
+                        ).animate().fadeIn(delay: 650.ms),
                       ],
                     ),
                   ),
                 ),
 
-                // Bottom section: buttons (fixed height)
+                // Bottom: sign-in buttons
                 Expanded(
                   flex: 4,
                   child: Padding(
@@ -171,40 +161,44 @@ class LoginScreen extends ConsumerWidget {
                         if (isLoading)
                           const _LoadingView()
                         else ...[
-                          // Google button
+                          // Google button — always shown, primary on Android
                           _GoogleSignInButton(
-                            onPressed: () => _signInWithGoogle(context, ref),
-                          )
+                                onPressed: () =>
+                                    _signInWithGoogle(context, ref),
+                                isPrimary: !isIOS,
+                              )
                               .animate()
                               .fadeIn(delay: 800.ms, duration: 500.ms)
                               .slideY(begin: 0.4, end: 0),
 
-                          const SizedBox(height: 16),
-
-                          // Apple button
-                          _AppleSignInButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: const Color(0xFF21262D),
-                                  content: Text(
-                                    'Apple Sign-In coming soon!',
-                                    style: GoogleFonts.inter(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                              .animate()
-                              .fadeIn(delay: 950.ms, duration: 500.ms)
-                              .slideY(begin: 0.4, end: 0),
+                          // Apple button — only on iOS
+                          if (isIOS) ...[
+                            const SizedBox(height: 14),
+                            _AppleSignInButton(
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: const Color(
+                                          0xFF21262D,
+                                        ),
+                                        content: Text(
+                                          'Apple Sign-In coming soon!',
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  isPrimary: true,
+                                )
+                                .animate()
+                                .fadeIn(delay: 950.ms, duration: 500.ms)
+                                .slideY(begin: 0.4, end: 0),
+                          ],
 
                           const SizedBox(height: 24),
-
-                          // Footer
                           Text(
                             'By continuing, you agree to our Terms & Privacy Policy',
                             style: GoogleFonts.inter(
@@ -213,7 +207,7 @@ class LoginScreen extends ConsumerWidget {
                               height: 1.5,
                             ),
                             textAlign: TextAlign.center,
-                          ).animate().fadeIn(delay: 1100.ms, duration: 500.ms),
+                          ).animate().fadeIn(delay: 1100.ms),
                         ],
                       ],
                     ),
@@ -251,73 +245,67 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
-// ─── Animated Logo ─────────────────────────────────────────────────────────
+// ─── Pulsing Logo ───────────────────────────────────────────────────────────
 
-class _AnimatedLogo extends StatefulWidget {
+class _PulsingLogo extends StatefulWidget {
   @override
-  State<_AnimatedLogo> createState() => _AnimatedLogoState();
+  State<_PulsingLogo> createState() => _PulsingLogoState();
 }
 
-class _AnimatedLogoState extends State<_AnimatedLogo>
+class _PulsingLogoState extends State<_PulsingLogo>
     with SingleTickerProviderStateMixin {
-  late AnimationController _pulse;
+  late AnimationController _ctrl;
   late Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
-    _pulse = AnimationController(
+    _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2200),
     )..repeat(reverse: true);
-    _scale = Tween<double>(begin: 1.0, end: 1.08).animate(
-      CurvedAnimation(parent: _pulse, curve: Curves.easeInOut),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 1.07,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
 
   @override
   void dispose() {
-    _pulse.dispose();
+    _ctrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _scale,
-      builder: (_, child) => Transform.scale(
-        scale: _scale.value,
-        child: child,
-      ),
-      child: Container(
-        width: 118,
-        height: 118,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF6C63FF).withValues(alpha: 0.55),
-              blurRadius: 40,
-              spreadRadius: 6,
-            ),
-            BoxShadow(
-              color: const Color(0xFF00E5FF).withValues(alpha: 0.25),
-              blurRadius: 60,
-              spreadRadius: 10,
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Image.asset(
-            'assets/talkie_icon.png',
+          animation: _scale,
+          builder: (_, child) =>
+              Transform.scale(scale: _scale.value, child: child),
+          child: Container(
             width: 118,
             height: 118,
-            fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6C63FF).withValues(alpha: 0.55),
+                  blurRadius: 40,
+                  spreadRadius: 6,
+                ),
+                BoxShadow(
+                  color: const Color(0xFF00E5FF).withValues(alpha: 0.25),
+                  blurRadius: 60,
+                  spreadRadius: 10,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Image.asset('assets/talkie_icon.png', fit: BoxFit.cover),
+            ),
           ),
-        ),
-      ),
-    )
+        )
         .animate()
         .fadeIn(duration: 600.ms)
         .scale(
@@ -328,13 +316,12 @@ class _AnimatedLogoState extends State<_AnimatedLogo>
   }
 }
 
-// ─── Feature Pill ──────────────────────────────────────────────────────────
+// ─── Feature Pill ───────────────────────────────────────────────────────────
 
 class _FeaturePill extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
-
   const _FeaturePill({
     required this.icon,
     required this.label,
@@ -348,7 +335,7 @@ class _FeaturePill extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -369,12 +356,12 @@ class _FeaturePill extends StatelessWidget {
   }
 }
 
-// ─── Google Sign In Button ─────────────────────────────────────────────────
+// ─── Google Button ──────────────────────────────────────────────────────────
 
 class _GoogleSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
-
-  const _GoogleSignInButton({required this.onPressed});
+  final bool isPrimary;
+  const _GoogleSignInButton({required this.onPressed, required this.isPrimary});
 
   @override
   Widget build(BuildContext context) {
@@ -388,24 +375,31 @@ class _GoogleSignInButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           child: Ink(
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6C63FF), Color(0xFF4A42E8)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              gradient: isPrimary
+                  ? const LinearGradient(
+                      colors: [Color(0xFF6C63FF), Color(0xFF4A42E8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isPrimary ? null : const Color(0xFF161B22),
               borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF6C63FF).withValues(alpha: 0.45),
-                  blurRadius: 24,
-                  offset: const Offset(0, 10),
-                ),
-              ],
+              border: isPrimary
+                  ? null
+                  : Border.all(color: const Color(0xFF30363D), width: 1.5),
+              boxShadow: isPrimary
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                        blurRadius: 24,
+                        offset: const Offset(0, 10),
+                      ),
+                    ]
+                  : null,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Google G SVG-style icon
                 Container(
                   width: 26,
                   height: 26,
@@ -444,12 +438,12 @@ class _GoogleSignInButton extends StatelessWidget {
   }
 }
 
-// ─── Apple Sign In Button ──────────────────────────────────────────────────
+// ─── Apple Button ───────────────────────────────────────────────────────────
 
 class _AppleSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
-
-  const _AppleSignInButton({required this.onPressed});
+  final bool isPrimary;
+  const _AppleSignInButton({required this.onPressed, required this.isPrimary});
 
   @override
   Widget build(BuildContext context) {
@@ -463,21 +457,19 @@ class _AppleSignInButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           child: Ink(
             decoration: BoxDecoration(
-              color: const Color(0xFF161B22),
+              gradient: isPrimary
+                  ? const LinearGradient(
+                      colors: [Color(0xFF1C1C1E), Color(0xFF2C2C2E)],
+                    )
+                  : null,
+              color: isPrimary ? null : const Color(0xFF161B22),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: const Color(0xFF30363D),
-                width: 1.5,
-              ),
+              border: Border.all(color: const Color(0xFF3A3A3C), width: 1.5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.apple_rounded,
-                  size: 26,
-                  color: Colors.white,
-                ),
+                const Icon(Icons.apple_rounded, size: 26, color: Colors.white),
                 const SizedBox(width: 12),
                 Text(
                   'Continue with Apple',
@@ -497,7 +489,7 @@ class _AppleSignInButton extends StatelessWidget {
   }
 }
 
-// ─── Loading View ──────────────────────────────────────────────────────────
+// ─── Loading View ───────────────────────────────────────────────────────────
 
 class _LoadingView extends StatelessWidget {
   const _LoadingView();
@@ -528,7 +520,7 @@ class _LoadingView extends StatelessWidget {
   }
 }
 
-// ─── Grid Painter ──────────────────────────────────────────────────────────
+// ─── Grid Painter ───────────────────────────────────────────────────────────
 
 class _GridPainter extends CustomPainter {
   @override
@@ -536,9 +528,7 @@ class _GridPainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.white.withValues(alpha: 0.025)
       ..strokeWidth = 0.5;
-
     const spacing = 40.0;
-
     for (double x = 0; x <= size.width; x += spacing) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
@@ -548,5 +538,5 @@ class _GridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_GridPainter oldDelegate) => false;
+  bool shouldRepaint(_GridPainter old) => false;
 }
