@@ -37,7 +37,7 @@ class TalkShowApp extends ConsumerWidget {
     }
 
     return MaterialApp.router(
-      title: 'TalkShow',
+      title: 'Talkie',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       routerConfig: router,

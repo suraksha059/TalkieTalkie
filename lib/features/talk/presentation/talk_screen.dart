@@ -31,7 +31,7 @@ class TalkScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Text(
-                      'TalkShow',
+                      'Talkie',
                       style: AppTextStyles.heading2,
                     ).animate().fadeIn(duration: 400.ms),
                     const Spacer(),
